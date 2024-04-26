@@ -13,26 +13,63 @@
 
 {% block body %}
 	<head>
-		<script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
 		<script>
-
 			document.addEventListener('DOMContentLoaded', function () {
-const calendarEl = document.getElementById('calendar')
-const calendar = new FullCalendar.Calendar(calendarEl, {
-initialView: 'dayGridMonth',
-headerToolbar: {
-start: 'prev,next today',
-center: 'title',
-end: 'dayGridMonth, timeGridWeek'
-}
-})
-calendar.render()
-})
+				const calendarEl = document.getElementById('calendar');
+				const calendar = new FullCalendar.Calendar(calendarEl, {
+					initialView: 'dayGridMonth',
+					headerToolbar: {
+						start: 'prev,next today',
+						center: 'title',
+						end: 'dayGridMonth,timeGridWeek,timeGridDay'
+					},
+					dateClick: function(info) {
+						document.getElementById('appointmentDate').value = info.dateStr;
+						document.getElementById('appointmentModal').style.display = 'block';
+					},
+					events : []
+				});
+				calendar.render();
+			});
 		</script>
 	</head>
 
 
 	<div id='calendar'></div>
 
+	<div id="appointmentModal" style="display:none;">
+		<form id="appointmentForm">
+			Date: <input type="date" id="appointmentDate" readonly><br>
+			Heure: <input type="time" id="appointmentTime"><br>
+			Description: <input type="text" id="appointmentDesc"><br>
+			<button type="button" onclick="addAppointment()">Ajouter RDV</button>
+		</form>
+	</div>
 
+
+	<script>
+		function addAppointment() {
+			console.log("bouton appuyé")
+			const date = document.getElementById('appointmentDate').value;
+			const time = document.getElementById('appointmentTime').value;
+			const desc = document.getElementById('appointmentDesc').value;
+
+			if (time && desc) {
+				const dateTime = date + 'T' + time;
+				const calendarEl = document.getElementById('calendar');
+				var calendar = FullCalendar.Calendar.get(calendarEl);
+				calendar.events.push({
+					title: desc,
+					start: dateTime,
+					allDay: false
+				});
+
+				document.getElementById('appointmentModal').style.display = 'none';
+				document.getElementById('appointmentForm').reset();
+			} else {
+				alert('Veuillez remplir tous les champs.');
+			}
+			calendar.render();
+		}
+	</script>
 {% endblock %}
