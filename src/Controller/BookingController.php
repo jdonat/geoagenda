@@ -17,7 +17,7 @@ class BookingController extends AbstractController
     #[Route('/', name: 'app_booking_index', methods: ['GET'])]
     public function index(BookingRepository $bookingRepository): Response
     {
-        return $this->render('booking/index.html.twig', [
+        return $this->render('booking/calendar.html.twig', [
             'bookings' => $bookingRepository->findAll(),
         ]);
     }
